@@ -1,0 +1,7 @@
+ultralytics
+opencv-python-headless
+numpy
+scipy
+configparser
+cython_bbox
+lap
