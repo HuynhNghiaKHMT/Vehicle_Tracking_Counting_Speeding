@@ -5,3 +5,4 @@ scipy
 configparser
 cython_bbox
 lap
+motmetrics
