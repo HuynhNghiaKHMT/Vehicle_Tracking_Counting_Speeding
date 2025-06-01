@@ -1,3 +1,6 @@
+__pycache__/
+*.pyc
+
 video/detect_bytetrack.mp4 
 video/detect_deepsort.mp4 
 video/detect_sort.mp4 

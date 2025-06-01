@@ -4,7 +4,7 @@ import numpy as np
 import time
 from configparser import ConfigParser
 from detector.detector import Detector
-from tracker.byte_tracker import BYTETracker
+from bytetrack_tracker.byte_tracker import BYTETracker
 from counting.line_counting_classes import ObjectCounter
 from speed_estimator.zone_speeding import SpeedEstimator
 
