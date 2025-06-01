@@ -1,17 +1,25 @@
 # Simple Yolo + ByteTracker Application (CS431)
-- This repo implement a simple MOT on football dataset ([roboflow](https://universe.roboflow.com/roboflow-jvuqo/football-players-detection-3zvbc/dataset/1))
-- Using raw code from ByteTrack [repo](https://github.com/ifzhang/ByteTrack/tree/main/yolox/tracker) for educational purpose
+- This repo implement a simple MOT on a selt-collected vehicle dataset
+
+- Using raw code for educational purpose
++ Sort [repo](https://github.com/abewley/sort)
++ DeepSort [repo](https://github.com/nwojke/deep_sort)
++ Sort [repo](https://github.com/FoundationVision/ByteTrack/tree/main/yolox/sort_tracker) 
++ DeepSort [repo](https://github.com/FoundationVision/ByteTrack/tree/main/yolox/deepsort_tracker) 
++ ByteTrack [repo](https://github.com/FoundationVision/ByteTrack/tree/main/yolox/tracker) 
 
 # How to use
-- `notebook`: contains my progress of training and tracking code
-- `demo.py`: python file to run in cmd
-- `tracker`: raw ByteTrack code you can get from ByteTrack [repo](https://github.com/ifzhang/ByteTrack/tree/main/yolox/tracker)
+- `best_weight.pt`: Train a detection model for any object to get the best model file. Detection model [repo](https://www.kaggle.com/code/venon553/vehicletracking)
+- `ckpt.t7`: Train a Reid model for any object to get the best model file. Reid model [repo](https://drive.google.com/drive/folders/1xhG0kRH1EX5B9_Iz8gQJb7UNnn_riXi6?fbclid=IwY2xjawGgP-JleHRuA2FlbQIxMAABHTtlXk48SZAIWwOCf8kLAtTkbbJEg0t3xx_npqBuIJl4xu0ZMND5xssGbQ_aem_AqvZbukQOnhFL1xYKFwPdA)
 
 # Demo
 ```
 pip install -r requirements.txt
-python demo.py
+python demo_ByteTrack.py
 ``` 
+# Demo with streamlit application
+```
+pip install -r requirements.txt
+python streamlit_app.py
+```
 
-# Environments
-- I doing this repo in my WSL (Ubuntu), setting up is quite complicated, I suggest this [tutorial](https://www.youtube.com/watch?v=1HzYU2_t3yc)
