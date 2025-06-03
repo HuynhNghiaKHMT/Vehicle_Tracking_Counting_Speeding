@@ -6,4 +6,5 @@ configparser
 cython_bbox
 lap
 streamlit
-pandas openpyxl
+pandas 
+openpyxl
