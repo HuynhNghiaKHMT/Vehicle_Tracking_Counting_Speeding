@@ -1,4 +1,4 @@
-# Simple Yolo + ByteTracker Application (CS431)
+# Yolo + ByteTracker + Couting + Speed (CS338)
 - This repo implement a simple MOT on a selt-collected vehicle dataset
 
 - Using raw code for educational purpose
@@ -19,7 +19,7 @@ python demo_ByteTrack.py
 ``` 
 # Demo with streamlit application
 ```
-pip install -r requirements.txt
+pip install -r requirements_streamlit.txt
 python streamlit_app.py
 ```
 # Evaluate
