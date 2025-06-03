@@ -10,7 +10,7 @@ config = ConfigParser()
 config.read('tracker.cfg')
 
 # SETUP video
-cap = cv2.VideoCapture(config.get('video', 'video_path1'))
+cap = cv2.VideoCapture(config.get('video', 'video_path2'))
 width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
 height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 out_tracking = cv2.VideoWriter(config.get('video', 'video_out_tracking'), cv2.VideoWriter_fourcc(*'mp4v'), int(cap.get(cv2.CAP_PROP_FPS)), (width, height))
