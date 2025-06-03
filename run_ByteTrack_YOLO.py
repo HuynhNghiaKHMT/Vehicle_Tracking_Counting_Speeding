@@ -4,8 +4,7 @@ import numpy as np
 import time
 from configparser import ConfigParser
 from detector.detector import Detector
-from detector.detector_RT import Detector_RT
-from tracker.byte_tracker import BYTETracker
+from bytetrack_tracker.byte_tracker import BYTETracker
 from counting.line_counting_classes import ObjectCounter
 from speed_estimator.zone_speeding import SpeedEstimator
 from collections import defaultdict
@@ -81,7 +80,7 @@ def draw_bbox(frame, id, x1, y1, x2, y2, conf, label,speed=None, type='detect'):
 
 def main():
     # YOLOv8
-    weights = "best.pt"
+    weights = "weights\YOLOv8.pt"
     model = Detector(weights)
    
     args = TrackerArgs(
@@ -96,13 +95,13 @@ def main():
     tracked_objects = {} # Dictionary to store tracked objects with their labels
 
     # SETUP output video
-    cap = cv2.VideoCapture(config.get('video', 'video_path2'))    
+    cap = cv2.VideoCapture(config.get('video', 'video_path1'))    
     width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
     fps = int(cap.get(cv2.CAP_PROP_FPS))
-    out_tracking = cv2.VideoWriter(config.get('video', 'YOLO_out_2'), cv2.VideoWriter_fourcc(*'mp4v'), int(cap.get(cv2.CAP_PROP_FPS)), (width, height))
+    out_tracking = cv2.VideoWriter(config.get('video', 'YOLO_out_1'), cv2.VideoWriter_fourcc(*'mp4v'), int(cap.get(cv2.CAP_PROP_FPS)), (width, height))
     # out_detect = cv2.VideoWriter(config.get('video', f'video_out_detect{i}'), cv2.VideoWriter_fourcc(*'mp4v'), int(cap.get(cv2.CAP_PROP_FPS)), (width, height))
-    mot_output_path = config.get('annotations', 'anno_pred_2_YOLO')
+    mot_output_path = config.get('annotations', 'anno_pred_1_YOLO_BT')
     
     mot_file = open(mot_output_path, 'w')
 
