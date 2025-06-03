@@ -1,5 +1,3 @@
-# your_project/data_manager/vehicle_data_manager.py
-
 import pandas as pd
 import datetime
 import os
@@ -49,8 +47,8 @@ class VehicleDataManager:
         record = {
             "Time": current_time,
             "ID": vehicle_id,
-            "Class": most_frequent_class,
-            "Average Speed (km/h)": f"{avg_speed:.2f}" # Format to 2 decimal places
+            "Majority voting class": most_frequent_class,
+            "Average Speed (km/h)": f"{avg_speed:.2f}" 
         }
         self.records.append(record)
         self.tracked_vehicle_ids.add(vehicle_id) # Add to set (optional, for internal tracking if needed)
