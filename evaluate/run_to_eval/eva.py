@@ -13,9 +13,9 @@ config = ConfigParser()
 config.read('tracker.cfg')
 
 # Đường dẫn
-pred_path = config.get('annotations', 'anno_pred_2_RT')  # file predict
-gt_path = config.get('annotations', 'anno_gt_2')      # file gt
-video_path = config.get('video', 'video_path2')       # video gốc
+pred_path = "annotations/predicted/RT_DETR_S/video_3_predictions.txt"  # file predict
+gt_path = config.get('annotations', 'anno_gt_3')      # file gt
+video_path = config.get('video', 'video_path3')       # video gốc
 
 # Load dữ liệu annotation
 pred_df = load_mot_file(pred_path)
