@@ -4,6 +4,7 @@ import numpy as np
 from collections import defaultdict, deque
 
 class ViewTransformer:
+    """Convert coordinates from image space (pixels) to real space (meters or other units)"""
     def __init__(self, source, target):
         source = source.astype(np.float32)
         target = target.astype(np.float32)
@@ -18,18 +19,20 @@ class ViewTransformer:
         return transformed_points.reshape(-1, 2) # Keep as float for calculations
 
 class SpeedEstimator:
+    """Estimate the speed of moving objects using real-world transformed coordinates"""
     def __init__(self, fps, target_width_real, target_height_real, source_points, target_points):
         self.fps = fps
         self.target_width_real = target_width_real
         self.target_height_real = target_height_real
-        self.coordinates = defaultdict(lambda: deque(maxlen=int(fps * 2)))# Store transformed coordinates history
         self.view_transformer = ViewTransformer(source=source_points, target=target_points)
         
-        # NEW: Store individual speed calculations for averaging later
+        # Store transformed coordinates history
+        self.coordinates = defaultdict(lambda: deque(maxlen=int(fps * 2)))
+
+        # Store individual speed calculations for averaging later
         self.object_speed_history = defaultdict(list) # {id: [speed1, speed2, ...]}
 
 
-    # NEW: Methods to update parameters if they change in Streamlit sidebar
     def set_fps(self, fps):
         self.fps = fps
         # Adjust deque maxlen if FPS changes significantly
@@ -54,7 +57,7 @@ class SpeedEstimator:
 
 
     def transform_point(self, point_pixel):
-        """Transforms a single pixel point (x,y) to real-world coordinates."""
+        # Transforms a single pixel point (x,y) to real-world coordinates.
         transformed = self.view_transformer.transform_points(np.array([point_pixel]))[0]
         return transformed
     
@@ -62,10 +65,7 @@ class SpeedEstimator:
         self.coordinates[tracker_id].append(transformed_point)
 
     def estimate_speed(self, tracker_id, bbox_pixel):
-        """
-        Estimates speed for a given tracker_id based on its transformed coordinates history.
-        Stores individual speed calculations in object_speed_history.
-        """
+        # Estimates speed for a given tracker_id based on its transformed coordinates history.
         x1, y1, x2, y2 = bbox_pixel
         center_x_pixel = (x1 + x2) / 2
         center_y_pixel = (y1 + y2) / 2
@@ -89,22 +89,20 @@ class SpeedEstimator:
                 speed_mps = real_distance_meters / time_elapsed_seconds
                 speed_kmh = speed_mps * 3.6
                
-                # NEW: Store this instantaneous speed
+                # Stores individual speed calculations in object_speed_history.
                 self.object_speed_history[tracker_id].append(speed_kmh)
                 
                 return speed_kmh
         
         return None # Return None if not enough data to calculate speed
 
-    # NEW: Method to get the full speed history for an object
     def get_speed_history(self, tracker_id):
+        # Get the full speed history for an object
         return self.object_speed_history.get(tracker_id, [])
 
-    # NEW: Method to clear speed history for an object (e.g., after recording to Excel or track lost)
     def clear_object_history(self, tracker_id):
+        # Clear speed history for an object (e.g., after recording to Excel or track lost)
         if tracker_id in self.coordinates:
-
             del self.coordinates[tracker_id]
         if tracker_id in self.object_speed_history:
-
             del self.object_speed_history[tracker_id]

@@ -84,7 +84,7 @@ def main():
         match_thresh=config.getfloat('Tracker', 'match_thresh'),
         fuse_score=config.getboolean('Tracker', 'fuse_score')
     )
-    model_path='weights*/ckpt.t7'
+    model_path='weights/ckpt.t7'
     tracker = DeepSort(model_path) # Initialize SORT tracker
     frame_id = 0
     tracking_results = [] # store tracking results for eval, debug,...

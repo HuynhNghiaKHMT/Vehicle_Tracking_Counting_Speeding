@@ -10,4 +10,7 @@ def get_default_session_state_values():
         'source_points_config': None,
         'target_width_real_config': 32,
         'target_height_real_config': 36,
+        'enable_counting_config': False,
+        'enable_speeding_config': False,
+        'current_detector_class_name':'Detector'
     }

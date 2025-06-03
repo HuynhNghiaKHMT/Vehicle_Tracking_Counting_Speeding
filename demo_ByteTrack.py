@@ -126,7 +126,7 @@ def draw_zone(frame, zone):
 # For future these functions above can be moved to a separate file
 #================================================================================================
 def main():
-    weights = "best.pt"
+    weights = "weights/best.pt"
     model = Detector(weights)
     args = TrackerArgs(
         track_thresh=config.getfloat('Tracker', 'track_thresh'),

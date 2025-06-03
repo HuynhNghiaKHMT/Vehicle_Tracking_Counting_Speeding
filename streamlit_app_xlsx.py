@@ -1,3 +1,4 @@
+# --- Imports library ---
 import streamlit as st
 import cv2
 import numpy as np
@@ -6,14 +7,12 @@ import tempfile
 import os
 
 # Import modules from our project structure
-from detector.detector import Detector
+from detector.detector import Detector, Detector_RT
 from bytetrack_tracker.byte_tracker import BYTETracker
 from counting.line_counting_classes_xlsx import ObjectCounter
 from speed_estimator.zone_speeding_xlsx import SpeedEstimator
 
 # Import helper functions and configurations
-# IMPORTANT: Changed 'util' to 'utils' based on previous discussions and common practice.
-# If your folder is actually named 'util', please change these back.
 from util.drawing_utils import (draw_fps, draw_bbox, draw_line, draw_count, draw_zone, draw_ruler)
 from util.app_state_utils_xlsx import reset_session_state_and_ui
 from config.constants import (
@@ -24,11 +23,10 @@ from config.constants import (
 )
 from config.initial_values import get_default_session_state_values
 
-# NEW: Import the VehicleDataManager
-# Ensure your data_manager folder is at the same level as streamlit_app.py
+# Import the VehicleDataManager
 from data_manager.vehicle_data_manager import VehicleDataManager
 
-
+# --- Encapsulate the configuration parameters needed for BYTETracker ---
 class TrackerArgs:
     def __init__(self, track_thresh, track_buffer, match_thresh, fuse_score):
         self.track_thresh = track_thresh
@@ -39,24 +37,37 @@ class TrackerArgs:
 
 # --- Streamlit Application ---
 
+# --- Configure Streamlit Page and Title ---
 st.set_page_config(layout="wide", page_title="Vivehicle")
 
-st.title("ByteTrack Object Tracking, Counting, and Speed Estimation")
+st.title("ByteTrack Application in Intelligent Traffic Monitoring")
 st.write("Upload a video and choose the functionalities you want to enable. Adjust line/zone points on the preview frame.")
 
 # Sidebar for configuration
 st.sidebar.header("Configuration")
 
-# Initialize session state variables using our utility function
-# This will set up defaults like run_processing, preview_frame, etc.
+# --- Initialize st.session_state and key objects ---
+
+# Initialize session state variables using our utility function like run_processing, preview_frame, etc.
 for key, value in get_default_session_state_values().items():
     st.session_state.setdefault(key, value)
 
-# NEW: Initialize Detector, Tracker, Counter, SpeedEstimator objects once per session
+# Initialize Detector, Tracker, Counter, SpeedEstimator objects once per session
 # This avoids re-initialization them with every Streamlit rerun, which is inefficient.
-# We use unique names like _obj to avoid conflicts with local variables.
-if 'detector_obj' not in st.session_state:
-    st.session_state.detector_obj = Detector("weights/best.pt") # Ensure correct path to your model
+# if 'detector_obj' not in st.session_state:
+#     st.session_state.detector_obj = Detector("weights/best.pt")
+
+st.session_state.setdefault('selected_detector_type', 'Detector')
+if 'detector_obj' not in st.session_state or \
+   st.session_state.get('current_detector_class_name') != st.session_state.selected_detector_type:
+    
+    if st.session_state.selected_detector_type == 'Detector':
+        st.session_state.detector_obj = Detector("weights/YOLOv8.pt")
+        st.session_state.current_detector_class_name = 'Detector'
+    elif st.session_state.selected_detector_type == 'Detector_RT':
+        st.session_state.detector_obj = Detector_RT("weights/RT_DETR.pt")
+        st.session_state.current_detector_class_name = 'Detector_RT'
+        
 
 # Initialize tracker args in session state for persistence and to pass to TrackerArgs
 st.session_state.setdefault('track_thresh_config', DEFAULT_TRACK_THRESH)
@@ -72,34 +83,48 @@ if 'byte_tracker_obj' not in st.session_state:
                     st.session_state.fuse_score_config)
     )
 
+# ObjectCounter needs line_start, line_end. Update it properly when video starts with actual line_coords_config.
 if 'object_counter_obj' not in st.session_state:
-    # ObjectCounter needs line_start, line_end. We'll set a dummy for initial init
-    # and update it properly when video starts with actual line_coords_config.
     st.session_state.object_counter_obj = ObjectCounter((0,0), (1,1)) 
 
+# SpeedEstimator needs fps, real_dims, points. Update it properly when video starts with actual zone/dims/fps.
 if 'speed_estimator_obj' not in st.session_state:
-    # SpeedEstimator needs fps, real_dims, points. Set dummy for initial init
-    # and update it properly when video starts with actual zone/dims/fps.
     st.session_state.speed_estimator_obj = SpeedEstimator(1, 1, 1, np.array([[0,0],[1,0],[1,1],[0,1]], dtype=np.float32), np.array([[0,0],[1,0],[1,1],[0,1]], dtype=np.float32))
 
-# NEW: Initialize VehicleDataManager
+# Initialize VehicleDataManager
 if 'vehicle_data_manager' not in st.session_state:
     st.session_state.vehicle_data_manager = VehicleDataManager("vehicle_information.xlsx")
 
-# NEW: Dictionary to store history of classes and speeds for each tracked ID
-# This will persist across frames for a given tracked object
+# Dictionary to store history of classes and speeds for each tracked ID
 if 'vehicle_history_data' not in st.session_state:
     # Each entry: {id: {'classes': [], 'speeds': []}}
     st.session_state.vehicle_history_data = {} 
 
-
+# --- Install Interface Sidebar (UI Controls) ---
 uploaded_file = st.sidebar.file_uploader("Upload Video", type=["mp4", "avi", "mov"])
 
-# --- Video Information Placeholder ---
+# Video Information Placeholder
 st.sidebar.markdown("---")
 st.sidebar.subheader("Video Information")
-video_info_placeholder = st.sidebar.empty() # Create a placeholder to update later
-video_info_placeholder.info("Upload a video to see its dimensions.") # Initial message
+video_info_placeholder = st.sidebar.empty() 
+video_info_placeholder.info("Upload a video to see its dimensions.") 
+
+# Detect Selection Checkboxes
+st.sidebar.markdown("---")
+st.sidebar.subheader("Select Detector Model")
+selected_detector_option = st.sidebar.radio(
+    "Choose Detection Model:",
+    ('Detector (YOLOv8 Default)', 'Detector_RT (YOLOv8 Realtime)'), # Labels thân thiện hơn
+    index=0, # Mặc định chọn 'Detector (YOLOv8 Default)'
+    key='detector_type_radio'
+)
+
+# Map back to the actual class name string for internal use
+if selected_detector_option == 'Detector (YOLOv8 Default)':
+    st.session_state.selected_detector_type = 'Detector'
+else: # 'Detector_RT (YOLOv8 Realtime)'
+    st.session_state.selected_detector_type = 'Detector_RT'
+
 
 # Feature Selection Checkboxes
 st.sidebar.markdown("---")
@@ -108,11 +133,6 @@ st.session_state.setdefault('enable_counting_config', False)
 st.session_state.setdefault('enable_speeding_config', False)
 enable_counting = st.sidebar.checkbox("Object Counting", value=st.session_state.enable_counting_config)
 enable_speeding = st.sidebar.checkbox("Speed Estimation", value=st.session_state.enable_speeding_config)
-
-# Update session state for checkboxes
-st.session_state.enable_counting_config = enable_counting
-st.session_state.enable_speeding_config = enable_speeding
-
 
 # Detection parameters
 st.sidebar.markdown("---")
@@ -148,11 +168,12 @@ st.session_state.track_buffer_config = track_buffer
 st.session_state.match_thresh_config = match_thresh
 st.session_state.fuse_score_config = fuse_score
 
+# --- Logic Preview Video và Cài đặt Line/Zone ---
 
 # Placeholder for video display in main area
 video_placeholder = st.empty()
 
-# --- Preview Logic for Line/Zone Setup ---
+# Preview Logic for Line/Zone Setup
 if uploaded_file:
     current_file_id = f"{uploaded_file.name}-{uploaded_file.size}"
 
@@ -283,13 +304,13 @@ elif not uploaded_file and not st.session_state.run_processing and st.session_st
     st.info("Please upload a video file to start processing and set up features.")
     video_info_placeholder.info("Upload a video to see its dimensions.")
 
-
+# --- Main Processing Logic ---
 st.sidebar.markdown("---")
 start_button = st.sidebar.button("Start Processing")
 stop_button = st.sidebar.button("Stop Processing")
 manual_save_excel_button = st.sidebar.button("Save Records to Excel Now")
 
-# --- Main Processing Logic (when Start button is pressed) ---
+# --- When Start button is pressed ---
 if start_button and st.session_state.temp_video_path is not None:
     st.session_state.run_processing = True
     st.write("Starting video processing...")
@@ -355,6 +376,7 @@ if start_button and st.session_state.temp_video_path is not None:
                     if enable_speeding and st.session_state.source_points_config is not None:
                         draw_zone(frame_display, st.session_state.source_points_config)
 
+                    # Detect 
                     detect_results = st.session_state.detector_obj.detect(frame, conf=detection_conf_threshold, iou=detection_iou_threshold)
                     detections_for_tracker = []
                     current_detections_with_class = []
@@ -375,7 +397,7 @@ if start_button and st.session_state.temp_video_path is not None:
                     else:
                         detections_for_tracker = np.empty((0, 5))
                     
-
+                    # Update tracker with new detections
                     online_targets = st.session_state.byte_tracker_obj.update(detections_for_tracker, frame.shape[:2], (height, width))
 
                     new_frame_time = time.time()
@@ -435,7 +457,9 @@ if start_button and st.session_state.temp_video_path is not None:
                             }
                         
                         st.session_state.vehicle_history_data[tid]['classes'].append(object_class_name)
+                        
 
+                        # Estimated speed
                         speed_kmh = None
                         if enable_speeding and st.session_state.speed_estimator_obj:
                             current_bbox_center_x_int = int(current_bbox_center_x)
@@ -460,7 +484,7 @@ if start_button and st.session_state.temp_video_path is not None:
                                         st.session_state.vehicle_history_data[tid]['speeds'].clear()
                             # else: No speed estimation if zone is not configured correctly.
 
-
+                        # Count objects and export to Excel
                         if enable_counting and st.session_state.object_counter_obj:
                             st.session_state.object_counter_obj.update(tid, (x1, y1, x2, y2), matched_class_id)
 
@@ -518,11 +542,12 @@ if start_button and st.session_state.temp_video_path is not None:
                 reset_session_state_and_ui(video_placeholder, video_info_placeholder)
                 st.info("Processing stopped and records saved (if any).")
 
-
+# When Stop button is pressed
 elif stop_button:
     st.session_state.run_processing = False
     st.info("Processing stopped by user. Records will be saved.")
 
+# When Export button is pressed
 if manual_save_excel_button:
     st.session_state.vehicle_data_manager.save_to_excel()
     st.success("Records saved to Excel!")

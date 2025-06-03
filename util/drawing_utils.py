@@ -1,8 +1,7 @@
-# your_project/utils/drawing_utils.py
 import cv2
 import numpy as np
 import datetime
-from config.constants import BG_COLORS # Import colors from config
+from config.constants import BG_COLORS 
 
 def draw_fps(frame, fps_val):
     """Draws FPS and frame dimensions on the given frame."""
@@ -23,13 +22,13 @@ def draw_fps(frame, fps_val):
 def draw_bbox(frame, id, x1, y1, x2, y2, conf, label, class_names, speed=None, type='detect'):
     """Draws a bounding box and label on the frame."""
     
-    background_color = BG_COLORS.get(class_names[label], (0, 0, 0)) # Default to black
+    background_color = BG_COLORS.get(class_names[label], (0, 0, 0))
 
     cv2.rectangle(frame, (x1, y1), (x2, y2), background_color, 2)
     font = cv2.FONT_HERSHEY_SIMPLEX
     font_scale = 1
     font_thickness = 2
-    text_color = (255, 255, 255) # White text
+    text_color = (255, 255, 255)
     text_y = y1 - 10 if y1 - 10 > 10 else y1 + 15
 
     if type == "detect":
@@ -50,7 +49,7 @@ def draw_line(frame, line_coords):
     """Draws a line on the frame for object counting."""
     pt1 = tuple(map(int, line_coords[0]))
     pt2 = tuple(map(int, line_coords[1]))
-    cv2.line(frame, pt1, pt2, (0, 255, 0), 2) # Green line
+    cv2.line(frame, pt1, pt2, (0, 255, 0), 2) 
 
 def draw_count(frame, counter, class_names):
     """Draws object counts on the frame."""
@@ -85,12 +84,12 @@ def draw_zone(frame, zone_points):
     """Draws a zone (polygon) on the frame for speed estimation."""
     pts = zone_points.astype(np.int32)
     pts = pts.reshape((-1, 1, 2))
-    cv2.polylines(frame, [pts], True, (255, 0, 0), thickness=2) # Blue color
+    cv2.polylines(frame, [pts], True, (255, 0, 0), thickness=2) 
 
 def draw_ruler(frame):
     """Draws horizontal and vertical rulers with pixel coordinates on the frame."""
     height, width, _ = frame.shape
-    ruler_color = (0, 0, 0)  # Black lines for ruler
+    ruler_color = (0, 0, 0)  
     ruler_thickness = 2
     tick_length_major = 15
     tick_length_minor = 7
@@ -99,20 +98,19 @@ def draw_ruler(frame):
     text_font = cv2.FONT_HERSHEY_SIMPLEX
     text_scale = 0.6
     text_thickness = 2
-    text_color = (0, 0, 0)      # Black text
-    background_color = (255, 255, 255) # White background for text
+    text_color = (0, 0, 0)     
+    background_color = (255, 255, 255) 
 
     # Draw Horizontal Ruler (Top Edge)
     cv2.line(frame, (0, 0), (width, 0), ruler_color, ruler_thickness)
     for i in range(0, width, minor_interval):
         cv2.line(frame, (i, 0), (i, tick_length_minor), ruler_color, ruler_thickness)
-        if i % major_interval == 0:
+        if i % major_interval == 0 and i != 0:
             cv2.line(frame, (i, 0), (i, tick_length_major), ruler_color, ruler_thickness)
             text = str(i)
             (text_width, text_height), baseline = cv2.getTextSize(text, text_font, text_scale, text_thickness)
-            text_x_centered = i - text_width // 2 # Calculate centered X position for text
+            text_x_centered = i - text_width // 2 
 
-            # Draw background rectangle for text
             cv2.rectangle(frame,
                           (text_x_centered - 5, tick_length_major + 5),
                           (text_x_centered + text_width + 5, tick_length_major + text_height + 15),
@@ -123,13 +121,12 @@ def draw_ruler(frame):
     cv2.line(frame, (0, 0), (0, height), ruler_color, ruler_thickness)
     for i in range(0, height, minor_interval):
         cv2.line(frame, (0, i), (tick_length_minor, i), ruler_color, ruler_thickness)
-        if i % major_interval == 0:
+        if i % major_interval == 0 and i != 0:
             cv2.line(frame, (0, i), (tick_length_major, i), ruler_color, ruler_thickness)
             text = str(i)
             (text_width, text_height), baseline = cv2.getTextSize(text, text_font, text_scale, text_thickness)
-            text_y_centered = i + text_height // 2 # Calculate centered Y position for text
+            text_y_centered = i + text_height // 2 
 
-            # Draw background rectangle for text
             cv2.rectangle(frame,
                           (tick_length_major + 5, text_y_centered - text_height // 2 - 5), # Top-left corner
                           (tick_length_major + text_width + 15, text_y_centered + text_height // 2 + 5), # Bottom-right corner
