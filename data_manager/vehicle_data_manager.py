@@ -9,7 +9,7 @@ class VehicleDataManager:
         self.tracked_vehicle_ids = set() # To ensure each vehicle is recorded only once
 
         # Define the Excel columns
-        self.columns = ["Time", "ID", "Class", "Average Speed (km/h)"]
+        self.columns = ["Time", "ID", "Majority voting class", "Average Speed (km/h)"]
 
         # Ensure the Excel file and headers exist if it's a new file
         if not os.path.exists(self.excel_filename):

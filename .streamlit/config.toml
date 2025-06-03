@@ -6,7 +6,7 @@
 # "none" sẽ tắt bộ theo dõi tệp, tránh xung đột với PyTorch.
 # Lưu ý: Ứng dụng sẽ không tự động reload khi bạn thay đổi code.
 # Bạn sẽ cần tự tay khởi động lại Streamlit sau mỗi thay đổi code.
-# fileWatcherType = "none"
+fileWatcherType = "none"
 
 [watcher]
 # Bỏ qua module 'torch' để ngăn chặn xung đột với bộ theo dõi tệp của Streamlit.
