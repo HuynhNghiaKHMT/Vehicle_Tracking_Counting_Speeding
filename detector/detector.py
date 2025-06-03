@@ -8,6 +8,6 @@ class Detector(object):
         print(data, epochs, batch)
         self.model.train(data=data, epochs=epochs, batch=batch)
 
-    def detect(self, image, threshold=0.5):
-        return self.model(image, threshold)
+    def detect(self, image, conf=0.5, iou=0.8):
+        return self.model(image, conf=conf, iou=iou, verbose=False)
     

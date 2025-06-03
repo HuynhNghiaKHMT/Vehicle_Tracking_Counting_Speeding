@@ -1,0 +1,15 @@
+[server]
+# Keep this if you want auto-rerun on file save
+# runOnSave = true 
+
+# Thiết lập này để kiểm soát cách Streamlit theo dõi các thay đổi tệp.
+# "none" sẽ tắt bộ theo dõi tệp, tránh xung đột với PyTorch.
+# Lưu ý: Ứng dụng sẽ không tự động reload khi bạn thay đổi code.
+# Bạn sẽ cần tự tay khởi động lại Streamlit sau mỗi thay đổi code.
+# fileWatcherType = "none"
+
+[watcher]
+# Bỏ qua module 'torch' để ngăn chặn xung đột với bộ theo dõi tệp của Streamlit.
+# Nếu sau này có các lỗi tương tự từ các thư viện khác, bạn có thể thêm chúng vào đây.
+# Ví dụ: ignored_dirs = ["torch", "some_other_problematic_module"]
+# ignored_dirs = ["torch"]
