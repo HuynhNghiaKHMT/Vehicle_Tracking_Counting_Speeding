@@ -83,8 +83,6 @@ class SpeedEstimator:
             
             # Time elapsed for one frame
             time_elapsed_seconds = 1.0 / self.fps
-            
-            # DEBUG: Print real distance and time
 
 
             if time_elapsed_seconds > 0:

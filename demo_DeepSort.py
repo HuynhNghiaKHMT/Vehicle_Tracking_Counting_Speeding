@@ -10,11 +10,11 @@ config = ConfigParser()
 config.read('tracker.cfg')
 
 # SETUP video
-cap = cv2.VideoCapture(config.get('video', 'video_path1'))
+cap = cv2.VideoCapture(config.get('video', 'video_path2'))
 width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
 height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-out_tracking = cv2.VideoWriter(config.get('video', 'video_out_tracking2'), cv2.VideoWriter_fourcc(*'mp4v'), int(cap.get(cv2.CAP_PROP_FPS)), (width, height))
-out_detect = cv2.VideoWriter(config.get('video', 'video_out_detect2'), cv2.VideoWriter_fourcc(*'mp4v'), int(cap.get(cv2.CAP_PROP_FPS)), (width, height))
+out_tracking = cv2.VideoWriter(config.get('video', 'video_out_tracking3'), cv2.VideoWriter_fourcc(*'mp4v'), int(cap.get(cv2.CAP_PROP_FPS)), (width, height))
+out_detect = cv2.VideoWriter(config.get('video', 'video_out_detect3'), cv2.VideoWriter_fourcc(*'mp4v'), int(cap.get(cv2.CAP_PROP_FPS)), (width, height))
 
 # extra params
 aspect_ratio_thresh = 0.6 # more condition for vertical box if you like
@@ -76,7 +76,7 @@ def draw_bbox(frame, id, x1, y1, x2, y2, conf, label, type='detect'):
 # For future these functions above can be moved to a separate file
 #================================================================================================
 def main():
-    weights = "best.pt"
+    weights = "weights/best.pt"
     model = Detector(weights)
     args = TrackerArgs(
         track_thresh=config.getfloat('Tracker', 'track_thresh'),
@@ -84,7 +84,7 @@ def main():
         match_thresh=config.getfloat('Tracker', 'match_thresh'),
         fuse_score=config.getboolean('Tracker', 'fuse_score')
     )
-    model_path='ckpt.t7'
+    model_path='weights*/ckpt.t7'
     tracker = DeepSort(model_path) # Initialize SORT tracker
     frame_id = 0
     tracking_results = [] # store tracking results for eval, debug,...

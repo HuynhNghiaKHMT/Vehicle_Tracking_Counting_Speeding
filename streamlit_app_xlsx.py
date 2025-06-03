@@ -123,7 +123,7 @@ st.session_state.setdefault('min_box_area_config', DEFAULT_MIN_BOX_AREA)
 
 detection_conf_threshold = st.sidebar.slider("Confidence Threshold", 0.0, 1.0, st.session_state.detection_conf_threshold_config, 0.05, help="Minimum confidence score for a detection to be considered valid.")
 detection_iou_threshold = st.sidebar.slider("IoU Threshold (NMS)", 0.0, 1.0, st.session_state.detection_iou_threshold_config, 0.05, help="IoU threshold for Non-Maximum Suppression (NMS) during detection.")
-min_box_area = st.sidebar.slider("Minimum Box Area", 0, 200, st.session_state.min_box_area_config, 10, help= "Minimum pixel area for a bounding box to be processed.")
+min_box_area = st.sidebar.slider("Minimum Box Area", 0, 2500, st.session_state.min_box_area_config, 100, help= "Minimum pixel area for a bounding box to be processed.")
 # FIX: text_input expects a string, not a list.
 class_name_input = st.sidebar.text_input("Class Names", "".join(DEFAULT_CLASS_NAMES), help="Comma-separated list of class names recognized by the model.")
 class_name = [name.strip() for name in class_name_input.split(',')]
@@ -220,14 +220,14 @@ if uploaded_file:
             st.sidebar.info("Adjust the four points to define the perspective transform zone.")
             st.sidebar.markdown("---")
 
-            default_p1_x = int(width * 0.416)
-            default_p1_y = int(height * 0.482)
-            default_p2_x = int(width * 0.585)
-            default_p2_y = int(height * 0.482)
+            default_p1_x = int(width * 0.4)
+            default_p1_y = int(height * 0.4)
+            default_p2_x = int(width * 0.6)
+            default_p2_y = int(height * 0.4)
             default_p3_x = int(width * 0.999)
-            default_p3_y = int(height * 0.999)
+            default_p3_y = int(height * 0.85)
             default_p4_x = int(width * 0.0)
-            default_p4_y = int(height * 0.999)
+            default_p4_y = int(height * 0.85)
 
             if st.session_state.source_points_config is not None and st.session_state.source_points_config.shape == (4, 2):
                 initial_sp = st.session_state.source_points_config

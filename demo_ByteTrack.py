@@ -13,12 +13,12 @@ config = ConfigParser()
 config.read('tracker.cfg')
 
 # SETUP video
-cap = cv2.VideoCapture(config.get('video', 'video_path4'))
+cap = cv2.VideoCapture(config.get('video', 'video_path2'))
 width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
 height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 fps = int(cap.get(cv2.CAP_PROP_FPS))
-out_tracking = cv2.VideoWriter(config.get('video', 'video_out_tracking1'), cv2.VideoWriter_fourcc(*'mp4v'), int(cap.get(cv2.CAP_PROP_FPS)), (width, height))
-out_detect = cv2.VideoWriter(config.get('video', 'video_out_detect1'), cv2.VideoWriter_fourcc(*'mp4v'), int(cap.get(cv2.CAP_PROP_FPS)), (width, height))
+out_tracking = cv2.VideoWriter(config.get('video', 'video_out_tracking2'), cv2.VideoWriter_fourcc(*'mp4v'), int(cap.get(cv2.CAP_PROP_FPS)), (width, height))
+out_detect = cv2.VideoWriter(config.get('video', 'video_out_detect2'), cv2.VideoWriter_fourcc(*'mp4v'), int(cap.get(cv2.CAP_PROP_FPS)), (width, height))
 
 # extra params
 aspect_ratio_thresh = 0.6 # more condition for vertical box if you like

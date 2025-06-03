@@ -8,6 +8,9 @@ class ObjectCounter:
         self.object_last_position = {}  # {id: (x_center, y_center)}
         self.count_up = defaultdict(int)    # {label: count}
         self.count_down = defaultdict(int)  # {label: count}
+
+        self.min_x_line = min(line_start[0], line_end[0])
+        self.max_x_line = max(line_start[0], line_end[0])
         
         # NEW: Track crossing status for Excel export
         # {id: {'crossed_flag': False, 'recorded_for_excel': False}}
@@ -31,23 +34,22 @@ class ObjectCounter:
 
         prev_x, prev_y = prev_pos
         
-        # DEBUG: Print current and previous Y positions relative to line
- 
 
-        # Check for crossing
-        # A crossing event occurs when the object's center crosses the line_y
-        # and its 'crossed_flag' is not already set to True.
-        if prev_y < self.line_y and y_center >= self.line_y:
-            # Crossed downwards (OUT)
-            self.count_down[label] += 1
-            if not self.object_excel_status[object_id]['crossed_flag']: # Only set flag if it's a new crossing
-                self.object_excel_status[object_id]['crossed_flag'] = True 
+        if x_center >= self.min_x_line and x_center <= self.max_x_line:
+            # Check for crossing
+            # A crossing event occurs when the object's center crosses the line_y
+            # and its 'crossed_flag' is not already set to True.
+            if prev_y < self.line_y and y_center >= self.line_y:
+                # Crossed downwards (OUT)
+                self.count_down[label] += 1
+                if not self.object_excel_status[object_id]['crossed_flag']: # Only set flag if it's a new crossing
+                    self.object_excel_status[object_id]['crossed_flag'] = True 
 
-        elif prev_y > self.line_y and y_center <= self.line_y:
-            # Crossed upwards (IN)
-            self.count_up[label] += 1
-            if not self.object_excel_status[object_id]['crossed_flag']: # Only set flag if it's a new crossing
-                self.object_excel_status[object_id]['crossed_flag'] = True 
+            elif prev_y > self.line_y and y_center <= self.line_y:
+                # Crossed upwards (IN)
+                self.count_up[label] += 1
+                if not self.object_excel_status[object_id]['crossed_flag']: # Only set flag if it's a new crossing
+                    self.object_excel_status[object_id]['crossed_flag'] = True 
        
         # NEW: Reset crossed_flag and recorded_for_excel if object moves far away from the line
         # This allows re-recording if it crosses back later. Adjust threshold (e.g., 50 pixels) as needed.
@@ -87,7 +89,6 @@ class ObjectCounter:
         Removes an object's status when it's no longer tracked (e.g., leaves frame).
         """
         if object_id in self.object_excel_status:
- 
             del self.object_excel_status[object_id]
         if object_id in self.object_last_position:
             del self.object_last_position[object_id]

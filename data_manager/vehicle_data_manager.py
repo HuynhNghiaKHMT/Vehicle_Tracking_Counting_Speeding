@@ -1,5 +1,3 @@
-# your_project/data_manager/vehicle_data_manager.py
-
 import pandas as pd
 import datetime
 import os
