@@ -27,6 +27,10 @@ python demo_ByteTrack.py
 pip install -r requirements_streamlit.txt
 python streamlit_app.py
 ```
+or nếu lỗi
+```
+streamlit run streamlit_app.py
+```
 
 # Evaluate
 
