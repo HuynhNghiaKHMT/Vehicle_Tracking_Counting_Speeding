@@ -43,7 +43,7 @@ def draw_bbox(frame, id, x1, y1, x2, y2, conf, label, speed=None, type='detect')
 
 def main():
     # === LOAD YOLOv8 MODEL ===
-    model = Detector("best.pt")
+    model = Detector("model/YOLOv8m.pt")
 
     # === INIT TRACKER ===
     tracker = Sort(max_age=30, min_hits=3, iou_threshold=0.3)

@@ -81,7 +81,7 @@ def draw_bbox(frame, id, x1, y1, x2, y2, conf, label,speed=None, type='detect'):
 
 def main():
     # YOLOv8
-    weights = "weights\YOLOv8.pt"
+    weights = "model/YOLOv8m.pt"
     model = Detector(weights)
    
     args = TrackerArgs(
@@ -96,13 +96,13 @@ def main():
     tracked_objects = {} # Dictionary to store tracked objects with their labels
 
     # SETUP output video
-    cap = cv2.VideoCapture(config.get('video', 'video_path2'))    
+    cap = cv2.VideoCapture(config.get('video', 'video_path5'))    
     width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
     fps = int(cap.get(cv2.CAP_PROP_FPS))
-    out_tracking = cv2.VideoWriter(config.get('video', 'YOLO_out_2'), cv2.VideoWriter_fourcc(*'mp4v'), int(cap.get(cv2.CAP_PROP_FPS)), (width, height))
+    out_tracking = cv2.VideoWriter(config.get('video', 'YOLO_out_5'), cv2.VideoWriter_fourcc(*'mp4v'), int(cap.get(cv2.CAP_PROP_FPS)), (width, height))
     # out_detect = cv2.VideoWriter(config.get('video', f'video_out_detect{i}'), cv2.VideoWriter_fourcc(*'mp4v'), int(cap.get(cv2.CAP_PROP_FPS)), (width, height))
-    mot_output_path = config.get('annotations', 'anno_pred_2_YOLO_BT')
+    mot_output_path = config.get('annotations', 'anno_pred_5_YOLO_BT')
     
     mot_file = open(mot_output_path, 'w')
 
@@ -129,6 +129,10 @@ def main():
                 
                 x1, y1, x2, y2 = map(int, bbox)
                 class_id = int(label)
+
+                # Bỏ qua nhãn không nằm trong danh sách class_name
+                if class_id < 0 or class_id >= len(class_name):
+                    continue
 
                 # Detections bbox format for BYTETracker
                 if conf > 0.5:

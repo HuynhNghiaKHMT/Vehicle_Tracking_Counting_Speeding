@@ -5,8 +5,8 @@ config = ConfigParser()
 config.read('tracker.cfg')
 # Đọc từ annotations ban đầu
 
-for i in range(2,6):
-    with open(f'./annotations/txt/gt_video_{i}.txt', 'r') as fin, open(config.get('annotations', f'anno_gt_{i-1}'), 'w') as fout:
+for i in range(2,3):
+    with open(f'./annotations/txt/gt_video_{i}.txt', 'r') as fin, open(config.get('annotations', f'anno_gt_{i}'), 'w') as fout:
         for line in fin:
             parts = line.strip().split(',')
             if len(parts) >= 6:

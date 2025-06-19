@@ -44,10 +44,10 @@ def draw_bbox(frame, id, x1, y1, x2, y2, conf, label, speed=None, type='detect')
 
 def main():
     # === LOAD YOLOv8 MODEL ===
-    model = Detector("best.pt")
+    model = Detector("model/YOLOv8m.pt")
 
     # === INIT TRACKER ===
-    tracker = DeepSort('ckpt.t7')
+    tracker = DeepSort('model/ckpt.t7')
 
     # === LOAD VIDEO ===
     cap = cv2.VideoCapture(config.get('video', 'video_path5'))    
