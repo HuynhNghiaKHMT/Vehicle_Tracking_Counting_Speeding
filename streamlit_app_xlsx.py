@@ -62,10 +62,10 @@ if 'detector_obj' not in st.session_state or \
    st.session_state.get('current_detector_class_name') != st.session_state.selected_detector_type:
     
     if st.session_state.selected_detector_type == 'Detector':
-        st.session_state.detector_obj = Detector("weights/YOLOv8.pt")
+        st.session_state.detector_obj = Detector("model/YOLOv8m.pt")
         st.session_state.current_detector_class_name = 'Detector'
     elif st.session_state.selected_detector_type == 'Detector_RT':
-        st.session_state.detector_obj = Detector_RT("weights/RT_DETR.pt")
+        st.session_state.detector_obj = Detector_RT("model/RT_DETR.pt")
         st.session_state.current_detector_class_name = 'Detector_RT'
         
 
