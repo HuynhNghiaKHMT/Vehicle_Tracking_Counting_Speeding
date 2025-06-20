@@ -127,8 +127,7 @@ Dưới đây là một đoạn video/GIF ngắn minh họa hoạt động của
 <img src="assets/demoHD.gif" width="100%">
 
 
-## 📊 Đánh giá hiệu suất
-Để đánh giá hiệu suất của hệ thống tracking, bạn có thể sử dụng các script sau:
+## 📊 Một số file chính và chức năng:
 
 ### 1. `convert.py`:
 * Chức năng: Chuyển đổi định dạng các file annotation từ công cụ gắn nhãn sang định dạng tương thích với đầu ra của mô hình (thường là định dạng MOT Challenge hoặc tương tự).
