@@ -1,4 +1,6 @@
-# Yolo + ByteTracker + Counting + Speeding Application (CS338)
+# VEHICLE TRACKING WITH SPEED ESTIMATION AND COUNTING
+## CS338 - Pattern Regconition
+
 
 ![GitHub last commit](https://img.shields.io/github/last-commit/HuynhNghiaKHMT/Vehicle_Tracking_Counting_Speeding
 )
